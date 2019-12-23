@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.test.dto.PostDto;
 import com.test.entities.Post;
 import com.test.entities.User;
 import com.test.service.PostService;
@@ -69,8 +70,8 @@ public class PostController {
 	}
 
 	@GetMapping("/findAllPost")
-	public ResponseEntity<List<Post>> getAllUser() {
-		List<Post> posts = this.postService.findAll();
+	public ResponseEntity<List<PostDto>> getAllUser() {
+		List<PostDto> posts = this.postService.findAll();
 		if (posts == null)
 			return ResponseEntity.notFound().build();
 		return ResponseEntity.ok().body(posts);
