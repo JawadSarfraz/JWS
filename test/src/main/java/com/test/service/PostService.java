@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.test.dto.PostDto;
 import com.test.entities.Post;
-import com.test.repository.PostDtoRepository;
 import com.test.repository.PostRepository;
 
 @Service
@@ -20,9 +19,6 @@ public class PostService {
 	
 	@Autowired
 	private PostRepository postRepository;
-
-	@Autowired
-	private PostDtoRepository postDtoRepository;
 
 	private static final Logger logger = LoggerFactory.getLogger(PostService.class);
 
@@ -32,8 +28,8 @@ public class PostService {
 	}
 
 	// find All Users
-	public List<PostDto> findAll() {
-		return (List<PostDto>) this.postDtoRepository.findAll();
+	public List<Post> findAll() {
+		return (List<Post>) this.postRepository.findAll();
 	}
 
 	// get user by id

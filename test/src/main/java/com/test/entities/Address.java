@@ -2,11 +2,11 @@ package com.test.entities;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -22,6 +22,9 @@ public class Address implements Serializable {
 	private String state;
 	private String country;
 	private String zipCode;
+	
+	@OneToOne(mappedBy="address")
+	private User user;
 	
 	public int getId() {
 		return id;
@@ -52,6 +55,12 @@ public class Address implements Serializable {
 	}
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 }

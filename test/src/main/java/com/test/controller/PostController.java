@@ -1,10 +1,13 @@
 package com.test.controller;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +35,9 @@ public class PostController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+    private ModelMapper modelMapper;
 	
 	@RequestMapping("/")
 	public String index (){
@@ -70,11 +76,15 @@ public class PostController {
 	}
 
 	@GetMapping("/findAllPost")
-	public ResponseEntity<List<PostDto>> getAllUser() {
-		List<PostDto> posts = this.postService.findAll();
+	public ResponseEntity<List<PostDto>> getAllPost() {
+		List<Post> posts = this.postService.findAll();
 		if (posts == null)
 			return ResponseEntity.notFound().build();
-		return ResponseEntity.ok().body(posts);
+		
+		Type listType = new TypeToken<List<PostDto>>(){}.getType();
+		List<PostDto> postDtoList = this.modelMapper.map(posts,listType);
+		
+		return ResponseEntity.ok().body(postDtoList);
 	}
 
 	// get one user
