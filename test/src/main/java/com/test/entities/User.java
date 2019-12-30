@@ -31,11 +31,11 @@ public class User implements Serializable{
 	private String email;
 	private String gender;
 
-	@OneToMany(fetch = FetchType.LAZY,cascade= {CascadeType.MERGE ,CascadeType.PERSIST })
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name="user_id")
     private List<Post> posts = new ArrayList<>();
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "address_id")
 	private Address address;
 	

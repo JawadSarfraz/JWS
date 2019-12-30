@@ -1,10 +1,13 @@
 package com.test.controller;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.test.dto.PostDto;
+import com.test.dto.UserDto;
 import com.test.entities.User;
 import com.test.service.UserService;
 
@@ -26,15 +31,11 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+    private ModelMapper modelMapper;
 
 	@RequestMapping("/")
-	public String index() {
-
-		// TODO Auto-generated method stub
-
-		//User u1 = new User("asaz", "aas", "qw", 15, "qew", "azz", "zxc", "xsc", 15);
-
-		Optional<User> temp = userService.getOne(15);
+	public String index() {		Optional<User> temp = userService.getOne(15);
 		if (temp.isPresent()) {
 			System.out.println(temp.get());
 		} else {
@@ -43,40 +44,35 @@ public class UserController {
 		System.out.print(temp.getClass().getName());
 		return "Meowwwww....";
 	}
-
-	@PostMapping("/sign")
-	public void createUse() {
-		// return Response.build();
-		int a =1;
-		System.out.print(a);
-		//return this.userService.saveUser(user);
-	}
 	@PostMapping("/signUp")
-	public User createUser(@Valid @RequestBody User user) {
+	public ResponseEntity<UserDto> createUser(@Valid @RequestBody User user) {
 		// return Response.build();
-		return this.userService.saveUser(user);
+		user = this.userService.saveUser(user);
+		UserDto userDto = modelMapper.map(user, UserDto.class);
+		return ResponseEntity.ok().body(userDto);
 	}
 
 	@GetMapping("/findAllUser")
-	public ResponseEntity<List<User>> getAllUser() {
+	public ResponseEntity<List<UserDto>> getAllUser() {
 		List<User> users = this.userService.findAll();
 		if (users == null)
 			return ResponseEntity.notFound().build();
-		return ResponseEntity.ok().body(users);
+		Type listType = new TypeToken<List<UserDto>>(){}.getType();
+		List<UserDto> userDtoList = this.modelMapper.map(users,listType);
+		return ResponseEntity.ok().body(userDtoList);
 	}
 
-	// get one user
-
 	@GetMapping("/findUser/{id}")
-	public ResponseEntity<Optional<User>> getUse(@PathVariable(value = "id") int id) {
+	public ResponseEntity<UserDto> getUse(@PathVariable(value = "id") int id) {
 		Optional<User> user = this.userService.getOne(id);
 		if (user == null)
 			return ResponseEntity.notFound().build();
-		return ResponseEntity.ok().body(user);
+		UserDto userDto = this.modelMapper.map(user, UserDto.class);
+		return ResponseEntity.ok().body(userDto);
 	}
 
 	@PostMapping("/update/{id}")
-	public ResponseEntity<User> update(@PathVariable(value = "id") int id, @Valid @RequestBody User user) {
+	public ResponseEntity<UserDto> update(@PathVariable(value = "id") int id, @Valid @RequestBody User user) {
 		Optional<User> getUser = this.userService.getOne(id);
 		if (getUser == null)
 			return ResponseEntity.notFound().build();
@@ -87,10 +83,11 @@ public class UserController {
 		getUser.get().setGender(user.getGender());
 		
 		User updateUser = this.userService.saveUser(getUser.get());
-		return ResponseEntity.ok().body(updateUser);
+		UserDto userDto = this.modelMapper.map(updateUser, UserDto.class);
+		return ResponseEntity.ok().body(userDto);
 	}
-
-	@PostMapping("user/{id}")
+	//check the return stuff. maybe a String...???
+	@PostMapping("delete/{id}")
 	public ResponseEntity<Optional<User>> delete(@PathVariable(value = "id") int id) {
 		Optional<User> user = this.userService.getOne(id);
 		if (user == null)
@@ -111,5 +108,14 @@ public class UserController {
 	public String loginUser() {
 		return "SignUp";
 	}
+
+	@PostMapping("/sign")
+	public void createUse() {
+		// return Response.build();
+		int a =1;
+		System.out.print(a);
+		//return this.userService.saveUser(user);
+	}
+
 
 }

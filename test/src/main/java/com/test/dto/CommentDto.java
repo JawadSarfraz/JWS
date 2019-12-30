@@ -1,17 +1,16 @@
 package com.test.dto;
 
-import java.util.Date;
 import java.io.Serializable;
+import java.util.Date;
 
-public class PostDto implements Serializable {
-
+public class CommentDto  implements Serializable{
+	
 	private static final long serialVersionUID = 1L;
-	private int id;
 
+	private int id;
 	private String description;
-	private String status;
 	private Date timeStamp;
-	private Integer likes; // Later it will be List of unique users who like it
+	private Integer likes;
 	
 	public int getId() {
 		return id;
@@ -29,12 +28,12 @@ public class PostDto implements Serializable {
 		this.description = description;
 	}
 
-	public String getStatus() {
-		return status;
+	public Integer getLikes() {
+		return likes;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setLikes(Integer likes) {
+		this.likes= likes;
 	}
 
 	public Date getTimeStamp() {
@@ -44,13 +43,4 @@ public class PostDto implements Serializable {
 	public void setTimeStamp(Date timeStamp) {
 		this.timeStamp = timeStamp;
 	}
-
-	public Integer getLikes() {
-		return likes;
-	}
-
-	public void setLikes(Integer likes) {
-		this.likes = likes;
-	}
-
 }

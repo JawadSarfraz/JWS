@@ -1,32 +1,16 @@
-package com.test.entities;
+package com.test.dto;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "ADDRESS")
-
-public class Address implements Serializable {
+public class AddressDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	@Id	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 	private String city;
 	private String state;
 	private String country;
 	private String zipCode;
-	
-	@OneToOne(mappedBy="address",orphanRemoval = true,fetch = FetchType.LAZY)
-	private User user;
 	
 	public int getId() {
 		return id;
@@ -57,12 +41,6 @@ public class Address implements Serializable {
 	}
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
-	}
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
 	}
 	
 }

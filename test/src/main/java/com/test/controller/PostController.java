@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,40 +42,30 @@ public class PostController {
 	
 	@RequestMapping("/")
 	public String index (){
-
-			// TODO Auto-generated method stub
-			
 //			User u1 = new User("asaz","aas","qw",15,"qew","azz","zxc","xsc",15);
-			
 			Optional<Post> temp = postService.getOne(5);
 			if (temp.isPresent()) {
 	            System.out.println(temp.get());
 	        } else {
 	            System.out.printf("No post found with");
 	        }
-		//	System.out.print(temp.getClass().getName());
 		return "Meowwwww....";
 	}
 
-
 	@PostMapping("/signUp")
-	public ResponseEntity<Post> createUser(@Valid @RequestBody Post post) {
-		
+	public ResponseEntity<PostDto> createPost(@Valid @RequestBody Post post) {	
 		Optional<User> userObj = userService.getOne(post.getUser().getId());
 		
 		if(userObj.isPresent()) {
 			post.setUser(userObj.get());
-			
 			post = this.postService.savePost(post);
-			
 			if(post != null) {
-				return ResponseEntity.ok().body(post);
+				PostDto postDto = modelMapper.map(post, PostDto.class);
+				return ResponseEntity.ok().body(postDto);
 			}
 		}
-		
 		return ResponseEntity.notFound().build();
 	}
-
 	@GetMapping("/findAllPost")
 	public ResponseEntity<List<PostDto>> getAllPost() {
 		List<Post> posts = this.postService.findAll();
@@ -83,49 +74,56 @@ public class PostController {
 		
 		Type listType = new TypeToken<List<PostDto>>(){}.getType();
 		List<PostDto> postDtoList = this.modelMapper.map(posts,listType);
-		
 		return ResponseEntity.ok().body(postDtoList);
 	}
+	
+	@GetMapping("/findPost/{id}")
+	public ResponseEntity<PostDto> getUse(@PathVariable(value = "id") int id) {		
+		Optional<Post> post= this.postService.getOne(id);
+		if (post.isPresent() == false)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//			return ResponseEntity.notFound().build();
+		PostDto postDto = modelMapper.map(post.get(), PostDto.class);
+		return ResponseEntity.ok().body(postDto);
+	}
+	
+	@PostMapping("/deletePost/{id}")
+	public ResponseEntity<PostDto> delete(@PathVariable(value = "id") int id) {
+		Optional<Post> post = this.postService.getOne(id);
+		if (post.isPresent() == false)
+			return ResponseEntity.notFound().build();
+		this.postService.delete(post.get());
+		PostDto postDto = modelMapper.map(post.get(),PostDto.class);
+		return ResponseEntity.ok().body(postDto);
+	}
+	@PostMapping("/update/{id}")
+	public ResponseEntity<PostDto> update(@PathVariable(value = "id") int id, @Valid @RequestBody Post post) {
+		Optional<Post> getPost = this.postService.getOne(id);
+		if (getPost.isPresent() == false)
+			return ResponseEntity.notFound().build();
+		getPost.get().setDescription(post.getDescription());
+		getPost.get().setLikes(post.getLikes());
+		getPost.get().setStatus(post.getStatus());
+		getPost.get().setTimeStamp(post.getTimeStamp());
+		Post updateUser = this.postService.savePost(getPost.get());
+		
+		PostDto postDto = modelMapper.map(updateUser, PostDto.class);
+		return ResponseEntity.ok().body(postDto);
+	}
 
-	// get one user
-	/*
-	 * @GetMapping("/findUser/{id}") public ResponseEntity<User>
-	 * getUse(@PathVariable(value = "id") Long id) { User user =
-	 * this.userService.getOne(id); if (user == null) return
-	 * ResponseEntity.notFound().build(); return ResponseEntity.ok().body(user); }
-	 * 
-	 * @PostMapping("/update/{id}") public ResponseEntity<User>
-	 * update(@PathVariable(value="id") Long id,@Valid @RequestBody User user){ User
-	 * getUser = this.userService.getOne(id); if(getUser==null) return
-	 * ResponseEntity.notFound().build(); getUser.setCity(user.getCity());
-	 * getUser.setCountry(user.getCountry()); getUser.setDob(user.getDob());
-	 * getUser.setEmail(user.getEmail()); getUser.setName(user.getName());
-	 * getUser.setPassword(user.getPassword());
-	 * getUser.setUsername(user.getUsername());
-	 * 
-	 * User updateUser = this.userService.saveUser(getUser); return
-	 * ResponseEntity.ok().body(updateUser); }
-	 * 
-	 * @PostMapping("user/{id}") public ResponseEntity<User>
-	 * delete(@PathVariable(value="id") Long id){ User user =
-	 * this.userService.getOne(id); if(user==null) return
-	 * ResponseEntity.notFound().build(); this.userService.delete(user); return
-	 * ResponseEntity.ok().body(user); }
-	 */	
 
+	
 	@RequestMapping(value = "signup", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String createUser() {
 		// return Response.build();
-
 		return "Noob";
 		// return "SignUp";
 	}
-
 	@PostMapping("/login")
 	public String loginUser() {
 		return "SignUp";
 	}
-
+	
 
 	
 }
