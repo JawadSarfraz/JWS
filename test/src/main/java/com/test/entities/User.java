@@ -30,6 +30,7 @@ public class User implements Serializable{
 	private String password;
 	private String email;
 	private String gender;
+	private String userFlag;
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name="user_id")
@@ -86,5 +87,11 @@ public class User implements Serializable{
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getUserFlag() {
+		return userFlag;
+	}
+	public void setUserFlag(String userFlag) {
+		this.userFlag = userFlag;
 	}
 }

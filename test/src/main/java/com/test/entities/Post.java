@@ -32,6 +32,8 @@ public class Post  implements Serializable{
 	private String status;
 	private Date timeStamp;
 	private Integer likes; // Later it will be List of unique users who like it
+	private String postFlag;
+	private String userFlag;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable=false)
@@ -43,69 +45,64 @@ public class Post  implements Serializable{
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     private List<Resource> resources = new ArrayList<>();
 	
-
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
-
 	public String getDescription() {
 		return description;
 	}
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 	public String getStatus() {
 		return status;
 	}
-
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
 	public Date getTimeStamp() {
 		return timeStamp;
 	}
-
 	public void setTimeStamp(Date timeStamp) {
 		this.timeStamp = timeStamp;
 	}
-
 	public User getUser() {
 		return user;
 	}
-
 	public void setUser(User user) {
 		this.user = user;
 	}
-
 	public List<Comment> getComments() {
 		return comments;
 	}
-
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
-
 	public List<Resource> getResources() {
 		return resources;
 	}
-
 	public void setResources(List<Resource> resources) {
 		this.resources = resources;
 	}
-
 	public Integer getLikes() {
 		return likes;
 	}
-
 	public void setLikes(Integer likes) {
 		this.likes = likes;
 	}
-		
+	public String getPostFlag() {
+		return postFlag;
+	}
+	public void setPostFlag(String postFlag) {
+		this.postFlag = postFlag;
+	}
+	public String getUserFlag() {
+		return userFlag;
+	}
+	public void setUserFlag(String userFlag) {
+		this.userFlag = userFlag;
+	}
 }

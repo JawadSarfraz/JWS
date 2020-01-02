@@ -25,7 +25,8 @@ public class Address implements Serializable {
 	private String country;
 	private String zipCode;
 	
-	@OneToOne(mappedBy="address",orphanRemoval = true,fetch = FetchType.LAZY)
+	///@OneToOne(mappedBy="address",orphanRemoval = true,fetch = FetchType.LAZY)
+	@OneToOne(mappedBy="address",fetch = FetchType.LAZY)
 	private User user;
 	
 	public int getId() {

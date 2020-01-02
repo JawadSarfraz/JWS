@@ -1,7 +1,5 @@
 package com.test.service;
 
-
-
 import java.util.List;
 import java.util.Optional;
 
@@ -16,11 +14,12 @@ import com.test.repository.UserRepository;
 
 @Service
 public class UserService {
-	
+
 	@Autowired
 	private UserRepository userRepository;
 
-	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(UserService.class);
 
 	// save User
 	public User saveUser(User user) {
@@ -42,19 +41,20 @@ public class UserService {
 		this.userRepository.delete(user);
 	}
 
-	// get User by email
-	public User getUserByEmail(String email) {
-		logger.info("getUserByEmail() starts");
-		if (email.isEmpty()) {
-			logger.info("getUserByEmail() ends");
+	//LOGIN IMPLEMENTATION--> get User by email and pass
+	public User getUserByEmailAndPassword(String email,String password) {
+		logger.info("getUserByEmailAndPassword() starts");
+		if (email.isEmpty() || password.isEmpty()) {
+			logger.info("getUserByEmailAndPassword() ends");
 			return null;
 		}
-		logger.info("getUserByEmail() ends");
-		return this.userRepository.getUserByEmail(email);
+		logger.info("getUserByEmailAndPassword() ends");
+		//User getUser = this.userRepository.getUserByEmailAndPassword(email, password);
+		return this.userRepository.getUserByEmailAndPassword(email,password);
 	}
 
 	// Return Null if userNotExist or Pass Wrong
-	public User getUserByEmailAndPassword(String email, String password) {
+	/*public User getUserByEmailAndPassword(String email, String password) {
 		User user = getUserByEmail(email);
 		if (user == null) {
 			return null;
@@ -65,6 +65,17 @@ public class UserService {
 		}
 		return null;
 	}
+*/
+	public void deleteUser(int userid) {
+		this.userRepository.userStatusUpdate(userid);
+	}
 
+	public Iterable<User> findAllActiveUser() {
+		return this.userRepository.findAllActiveUser();
+	}
 
+	public User getUserByEmail(String email) {
+		// TODO Auto-generated method stub
+		return this.userRepository.getUserByEmail(email);
+	}
 }

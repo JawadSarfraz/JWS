@@ -77,6 +77,17 @@ public class PostController {
 		return ResponseEntity.ok().body(postDtoList);
 	}
 	
+	@GetMapping("/findAllPostUserActive")
+	public ResponseEntity<List<PostDto>> getAllPostActiveUser() {
+		Iterable<Post> posts = this.postService.findAllUserActive();
+		if (posts == null)
+			return ResponseEntity.notFound().build();
+		
+		Type listType = new TypeToken<List<PostDto>>(){}.getType();
+		List<PostDto> postDtoList = this.modelMapper.map(posts,listType);
+		return ResponseEntity.ok().body(postDtoList);
+	}
+	
 	@GetMapping("/findPost/{id}")
 	public ResponseEntity<PostDto> getUse(@PathVariable(value = "id") int id) {		
 		Optional<Post> post= this.postService.getOne(id);
@@ -86,44 +97,35 @@ public class PostController {
 		PostDto postDto = modelMapper.map(post.get(), PostDto.class);
 		return ResponseEntity.ok().body(postDto);
 	}
-	
-	@PostMapping("/deletePost/{id}")
-	public ResponseEntity<PostDto> delete(@PathVariable(value = "id") int id) {
-		Optional<Post> post = this.postService.getOne(id);
-		if (post.isPresent() == false)
-			return ResponseEntity.notFound().build();
-		this.postService.delete(post.get());
-		PostDto postDto = modelMapper.map(post.get(),PostDto.class);
-		return ResponseEntity.ok().body(postDto);
+	//DELETED USER SET POST'S FLAG UNSET...
+	@PostMapping("/deletePostWhenUserDeleted/{user_id}")
+	public Boolean deletePostWhenUserDeleted(@PathVariable(value = "user_id") int user_id) {
+		
+		Iterable<Post> posts= this.postService.findAllByUserId(user_id);
+		if(posts.spliterator().getExactSizeIfKnown() == 0)
+			return false;
+		for(Post post : posts){
+			post.setUserFlag("0");
+			this.postService.savePost(post);
+		}
+		return true;
+	}
+	//DELETE POST BY USER...
+	@PostMapping("/deletePostByUser/{post_id}")
+	public Boolean deletePostByUser(@PathVariable(value = "post_id") int postId) {
+		Optional<Post> getPost = this.postService.getOne(postId);
+		if(getPost.isPresent() == false)
+			return false;
+		this.postService.delete(getPost.get());
+		return true;
 	}
 	@PostMapping("/update/{id}")
 	public ResponseEntity<PostDto> update(@PathVariable(value = "id") int id, @Valid @RequestBody Post post) {
 		Optional<Post> getPost = this.postService.getOne(id);
 		if (getPost.isPresent() == false)
 			return ResponseEntity.notFound().build();
-		getPost.get().setDescription(post.getDescription());
-		getPost.get().setLikes(post.getLikes());
-		getPost.get().setStatus(post.getStatus());
-		getPost.get().setTimeStamp(post.getTimeStamp());
 		Post updateUser = this.postService.savePost(getPost.get());
-		
 		PostDto postDto = modelMapper.map(updateUser, PostDto.class);
 		return ResponseEntity.ok().body(postDto);
 	}
-
-
-	
-	@RequestMapping(value = "signup", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public String createUser() {
-		// return Response.build();
-		return "Noob";
-		// return "SignUp";
-	}
-	@PostMapping("/login")
-	public String loginUser() {
-		return "SignUp";
-	}
-	
-
-	
 }
