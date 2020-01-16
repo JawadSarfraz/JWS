@@ -3,8 +3,6 @@ package com.test.entities;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,12 +22,14 @@ public class Resource  implements Serializable{
 	private int id;
 	private String url;
 	private String state;
-	private String likes;
+	private Integer likes;
 	private String type;
 	private Date timeStamp;
+	private String postFlag;
+	private String resourceFlag;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="post_id",nullable=false)
+	@JoinColumn(name="post_id_1",nullable=false)
 	private Post post;
 	
 	public Post getPost() {
@@ -81,12 +81,28 @@ public class Resource  implements Serializable{
 
 	public void setTimeStamp(Date timeStamp) {
 		this.timeStamp = timeStamp;
-	}	public String getLikes() {
+	}	public Integer getLikes() {
 		return likes;
 	}
 
-	public void setLikes(String likes) {
+	public void setLikes(Integer likes) {
 		this.likes = likes;
+	}
+
+	public String getPostFlag() {
+		return postFlag;
+	}
+
+	public void setPostFlag(String postFlag) {
+		this.postFlag = postFlag;
+	}
+
+	public String getResourceFlag() {
+		return resourceFlag;
+	}
+
+	public void setResourceFlag(String resourceFlag) {
+		this.resourceFlag = resourceFlag;
 	}
 
 }

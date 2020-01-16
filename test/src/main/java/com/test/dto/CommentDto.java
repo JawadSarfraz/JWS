@@ -10,8 +10,10 @@ public class CommentDto  implements Serializable{
 	private int id;
 	private String description;
 	private Date timeStamp;
+	private String postStatus;
+	private String userStatus;
 	private Integer likes;
-	
+
 	public int getId() {
 		return id;
 	}
@@ -28,14 +30,6 @@ public class CommentDto  implements Serializable{
 		this.description = description;
 	}
 
-	public Integer getLikes() {
-		return likes;
-	}
-
-	public void setLikes(Integer likes) {
-		this.likes= likes;
-	}
-
 	public Date getTimeStamp() {
 		return timeStamp;
 	}
@@ -43,4 +37,30 @@ public class CommentDto  implements Serializable{
 	public void setTimeStamp(Date timeStamp) {
 		this.timeStamp = timeStamp;
 	}
+
+	public Integer getLikes() {
+		return likes;
+	}
+
+	public void setLikes(Integer likes) {
+		this.likes = likes;
+	}
+
+	public String getPostStatus() {
+		return postStatus;
+	}
+
+	public void setPostStatus(String postStatus) {
+		this.postStatus = postStatus;
+	}
+
+	public String getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(String userStatus) {
+		this.userStatus = userStatus;
+	}
+	
+	
 }

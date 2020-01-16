@@ -38,4 +38,12 @@ public class CommentService {
 	public void delete(Comment comment) {
 		this.commentRepository.delete(comment);
 	}
-}
+	public Iterable<Comment> findAllByPostId(int postId){
+		return this.commentRepository.findAllByPostId(postId);
+	}
+
+/*	public Iterable<Comment> findAllActiveUserAndPost() {
+		// TODO Auto-generated method stub
+		return this.commentRepository.findAllActiveUserAndPost();
+	}
+*/}

@@ -50,7 +50,7 @@ public class UserController {
 		return "Meowwwww....";
 	}
 	//HERE BOOLEAN CAN BE RETURNED-->uSER CREATED CONFIRMATION
-	@PostMapping("/c")
+	@PostMapping("/create")
 	public ResponseEntity<UserDto> createUser(@Valid @RequestBody User user) {
 		// return Response.build();
 		User obj = this.userService.getUserByEmail(user.getEmail());
@@ -80,57 +80,43 @@ public class UserController {
 		UserDto userDto = this.modelMapper.map(user, UserDto.class);
 		return ResponseEntity.ok().body(userDto);
 	}
-	
+	//TAKE POST AND DELETE ALLES.. AND THEN DELETE FROM USER, SOFT DELTETION
 	@PostMapping("/delete/{id}")
 //	public ResponseEntity<UserDto> delete(@PathVariable(value = "id") int id, @Valid @RequestBody User user) {
 	public Boolean delete(@PathVariable(value = "id") int id) {
 	
 		Optional<User> getUser = this.userService.getOne(id);
-		if (getUser == null)
+		if (getUser == null)							//user doesnot Exist...
 			return false;
-		//user doesnot Exist...ALREADY DELETED
-		if(getUser.get().getUserFlag().equals("0"))
+		if(getUser.get().getUserFlag().equals("0")) 	//user ALREADY DELETED
 			return false;
-		Iterable<Post> posts = postService.findAllByUserId(id);
-		for(Post post : posts){
+		Iterable<Post> posts = postService.findAllByUserId(id); 
+		for(Post post : posts){									// set all posts status 0, soft deletion
 			post.setUserFlag("0");
 			postService.savePost(post);
 		}
-		getUser.get().setUserFlag("0");
+		getUser.get().setUserFlag("0");							//user deletion is on
 		this.userService.saveUser(getUser.get());
-		//this.userService.deleteUser(id);
-		/*if(deleteUser.getUserFlag() == "0")
-			return true;
-		*/return true;
+		return true;
 	}
-	
+	//USER UPDATION HAPPENED VIA U_ID, NORMALLY UPDATION OCCUR VIA EMAIL, 
+	//SO GET U_ID BY EMAIL THEN DO OPERAITON, ALSO EMAIL WOULD BE UNIQUE...-->not implemented yet, discussion requred
 	@PostMapping("update/{id}")
-	public ResponseEntity<Optional<User>> update(@PathVariable(value = "id") int id) {
-		
+	public ResponseEntity<UserDto> update(@PathVariable(value = "id") int id) {	
 		Optional<User> getUser = this.userService.getOne(id);
 		if (getUser == null)
 			return ResponseEntity.notFound().build();
 		User updateUser = this.userService.saveUser(getUser.get());
-		
-/*		PostService postService;
-		postService.savePost(post)
-*/		UserDto userDto = this.modelMapper.map(updateUser, UserDto.class);
-		return ResponseEntity.ok().body(getUser);
+		UserDto userDto = this.modelMapper.map(updateUser, UserDto.class);
+		return ResponseEntity.ok().body(userDto);
 	}
-	@RequestMapping(value = "signup", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public String createUser() {
-		// return Response.build();
-
-		return "Noob";
-		// return "SignUp";
-	}
+	//LOGIN IMPLEMENTATION VIA EMAIL N PASSWORD
 	@PostMapping("/login")
 	public ResponseEntity<UserDto> loginUser(@PathVariable(value = "email") String email,@PathVariable(value = "password") String password) {
 		User getUser = this.userService.getUserByEmailAndPassword(email, password);
 		if(getUser == null)
 			return ResponseEntity.notFound().build();
 		UserDto userDto = modelMapper.map(getUser, UserDto.class);
-		
 		return ResponseEntity.ok().body(userDto);
 	}
 }

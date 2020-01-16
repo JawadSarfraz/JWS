@@ -10,9 +10,11 @@ public class ResourceDto  implements Serializable{
 	private int id;
 	private String url;
 	private String state;
-	private String likes;
+	private Integer likes;
 	private String type;
 	private Date timeStamp;
+
+	private String postFlag;
 	
 	public ResourceDto() {
 	}
@@ -55,12 +57,20 @@ public class ResourceDto  implements Serializable{
 
 	public void setTimeStamp(Date timeStamp) {
 		this.timeStamp = timeStamp;
-	}	public String getLikes() {
+	}	public Integer getLikes() {
 		return likes;
 	}
 
-	public void setLikes(String likes) {
+	public void setLikes(Integer likes) {
 		this.likes = likes;
+	}
+
+	public String getPostFlag() {
+		return postFlag;
+	}
+
+	public void setPostFlag(String postFlag) {
+		this.postFlag = postFlag;
 	}
 
 }

@@ -26,8 +26,10 @@ public class Comment  implements Serializable{
 	
 	private String description;
 	private Date timeStamp;
-
 	private Integer likes;
+	private String postFlag;
+	private String userFlag;
+	private String commentFlag;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="post_id",nullable=false)
@@ -84,5 +86,30 @@ public class Comment  implements Serializable{
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+	public String getPostFlag() {
+		return postFlag;
+	}
+
+	public void setPostFlag(String postFlag) {
+		this.postFlag = postFlag;
+	}
+
+	public String getUserFlag() {
+		return userFlag;
+	}
+
+	public void setUserFlag(String userFlag) {
+		this.userFlag = userFlag;
+	}
+
+	public String getCommentFlag() {
+		return commentFlag;
+	}
+
+	public void setCommentFlag(String commentFlag) {
+		this.commentFlag = commentFlag;
+	}
+	
 
 }
