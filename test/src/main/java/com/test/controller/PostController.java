@@ -62,12 +62,13 @@ public class PostController {
 		if (userObj == null || post.getResources().isEmpty())
 				return ResponseEntity.notFound().build();
 			post.setUser(userObj.get());
-			//int id = this.postService.getOne(post.getId()).get().getId();
 			//TRYING TO SET post id in RESOURCE TABLE.. WHICH IS NOT HAPPENNIG PREVIOUSLY
 			Iterable<Resource> res = post.getResources();
-/*			for(Resource r : res)
-				r.setId(post.getId());
-*/			post = this.postService.savePost(post);
+			for(Resource r : res) {
+				r.setPostFlag("1");
+				r.setResourceFlag("1");;
+			}
+			post = this.postService.savePost(post);
 			if (post != null) {
 				PostDto postDto = modelMapper.map(post, PostDto.class);
 				return ResponseEntity.ok().body(postDto);
@@ -140,14 +141,14 @@ public class PostController {
 			res.setResourceFlag("0");
 			this.resourceService.saveResource(res);
 		}}
-		Iterable<Comment> comments = this.commentService.findAllByPostId(postId);
+		Iterable<Comment> comments = this.commentService.findAllCommentByPostId(postId);
 		//ITERATE ALL RESOURECE TO SET RES ID =0, SOFT DELETION
 		if (comments.spliterator().getExactSizeIfKnown() == 0)
 		{}else{
 		for (Comment comment : comments) {
 			//UPDATION OF BOTH POST AND COMMENT FLAG HAPPEN,-->aLTERNATIVELY WE CAN DO Avoid SOFT DELETION OF COMMENT
 			comment.setPostFlag("0");
-			comment.setCommentFlag("0");
+			//comment.setCommentFlag("0");
 			this.commentService.saveComment(comment);
 		}}
 		

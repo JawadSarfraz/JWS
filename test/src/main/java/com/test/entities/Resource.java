@@ -29,7 +29,7 @@ public class Resource  implements Serializable{
 	private String resourceFlag;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="post_id_1",nullable=false)
+	@JoinColumn(name="post_id",nullable=false)
 	private Post post;
 	
 	public Post getPost() {

@@ -68,6 +68,17 @@ public class CommentController {
 		List<CommentDto> commentDtoList = this.modelMapper.map(comment, listType);
 		return ResponseEntity.ok().body(commentDtoList);
 	}
+	//LOAD ALL COMMENTS BY POST_ID, so like when every post loads it has comments
+	@GetMapping("/findAllCommentByPostId/{post_id}")
+	public ResponseEntity<Iterable<CommentDto>> getAllCommentByPostId(@PathVariable(value = "post_id") int postId) {
+		Iterable<Comment> comment= this.commentService.findAllCommentByPostId(postId);
+		if (comment == null)
+			return ResponseEntity.notFound().build();
+		Type listType = new TypeToken<Iterable<CommentDto>>() {
+		}.getType();
+		Iterable<CommentDto> commentDtoList = this.modelMapper.map(comment, listType);
+		return ResponseEntity.ok().body(commentDtoList);
+	}
 /*
 	@GetMapping("/findAllCommentUserActiveAndPost")
 	public ResponseEntity<List<CommentDto>> getAllCommentActiveUserAndPost() {
@@ -92,36 +103,19 @@ public class CommentController {
 	}
 
 	// DELETED USER SET POST'S FLAG UNSET... SET ALL COMMENT FROM USER AS SOFT DELETION...
-	@PostMapping("/deletePostWhenUserDeleted/{user_id}")
+	@PostMapping("/deleteCommentWhenPostDeleted/{post_id}")
 	public Boolean deletePostWhenUserDeleted(
-			@PathVariable(value = "user_id") int user_id) {
+			@PathVariable(value = "post_id") int postId) {
 
-		Iterable<Post> posts = this.postService.findAllByUserId(user_id);
-		if (posts.spliterator().getExactSizeIfKnown() == 0)
+		Iterable<Comment> comments = this.commentService.findAllCommentByPostId(postId);
+		if (comments.spliterator().getExactSizeIfKnown() == 0)
 			return false;
-		for (Post post : posts) {
-			post.setUserFlag("0");
-			this.postService.savePost(post);
+		for (Comment comment : comments) {
+			comment.setUserFlag("0");
+			this.commentService.saveComment(comment);
 		}
 		return true;
-	}
-	
-	// DELETED USER SET POST'S FLAG UNSET... SET ALL COMMENT FROM USER AS SOFT DELETION...
-/*	@PostMapping("/deletePostWhenUserDeleted/{user_id}")
-	public Boolean deletePostWhenUserDeleted(
-			@PathVariable(value = "user_id") int user_id) {
-
-		Iterable<Post> posts = this.postService.findAllByUserId(user_id);
-		if (posts.spliterator().getExactSizeIfKnown() == 0)
-			return false;
-		for (Post post : posts) {
-			post.setUserFlag("0");
-			this.postService.savePost(post);
-		}
-		return true;
-	}
-*/
-	
+	}	
 	//SOFT DELETION OF COMMENT OCCUR, SETS COMMENTfLAG TO 0 ONLY..
 	@PostMapping("/deleteComment/{comment_id}")
 	public Boolean deleteComment(@PathVariable(value = "comment_id") int commentId) {
@@ -144,15 +138,15 @@ public class CommentController {
 		this.postService.delete(getPost.get());
 		return true;
 	}
-
+	
 	@PostMapping("/update/{id}")
-	public ResponseEntity<PostDto> update(@PathVariable(value = "id") int id,
-			@Valid @RequestBody Post post) {
-		Optional<Post> getPost = this.postService.getOne(id);
-		if (getPost.isPresent() == false)
+	public ResponseEntity<CommentDto> update(@PathVariable(value = "id") int id,
+			@Valid @RequestBody Comment comment) {
+		Optional<Comment> getComment = this.commentService.getOne(id);
+		if (getComment.isPresent() == false)
 			return ResponseEntity.notFound().build();
-		Post updateUser = this.postService.savePost(getPost.get());
-		PostDto postDto = modelMapper.map(updateUser, PostDto.class);
-		return ResponseEntity.ok().body(postDto);
+		Comment updateComment = this.commentService.saveComment(getComment.get());
+		CommentDto commentDto = modelMapper.map(updateComment, CommentDto.class);
+		return ResponseEntity.ok().body(commentDto);
 	}
 }

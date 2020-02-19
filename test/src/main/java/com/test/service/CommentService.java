@@ -38,8 +38,9 @@ public class CommentService {
 	public void delete(Comment comment) {
 		this.commentRepository.delete(comment);
 	}
-	public Iterable<Comment> findAllByPostId(int postId){
-		return this.commentRepository.findAllByPostId(postId);
+	
+	public Iterable<Comment> findAllCommentByPostId(int postId){
+		return this.commentRepository.findAllCommentByPostId(postId);
 	}
 
 /*	public Iterable<Comment> findAllActiveUserAndPost() {
