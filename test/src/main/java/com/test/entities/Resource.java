@@ -1,4 +1,4 @@
-package com.test.entities;
+	package com.test.entities;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,9 +12,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "RESOURCE")
-public class Resource  implements Serializable{
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+	@Entity
+	@Table(name = "RESOURCE")
+	@DynamicInsert
+	@DynamicUpdate
+	public class Resource  implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 

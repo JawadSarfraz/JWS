@@ -16,11 +16,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
 @Table(name = "POST")
+@DynamicInsert
+@DynamicUpdate
 public class Post  implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -35,15 +39,17 @@ public class Post  implements Serializable{
 	private String postFlag;
 	private String userFlag;
 	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post", orphanRemoval = false)
+	//@OneToMany(mappedBy = "post", cascade = {CascadeType.MERGE,CascadeType.PERSIST}, orphanRemoval = true,fetch = FetchType.LAZY)
+    private List<Resource> resources = new ArrayList<>();		
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 	
-	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "post", cascade = {CascadeType.ALL,CascadeType.PERSIST}, orphanRemoval = true,fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-    private List<Resource> resources = new ArrayList<>();
 	
 	public int getId() {
 		return id;

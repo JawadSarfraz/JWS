@@ -17,8 +17,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 @Entity
 @Table(name = "USER")
+@DynamicInsert
+@DynamicUpdate
 public class User implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -36,7 +41,7 @@ public class User implements Serializable{
 	@JoinColumn(name="user_id")
     private List<Post> posts = new ArrayList<>();
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")
 	private Address address;
 	

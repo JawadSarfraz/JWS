@@ -1,6 +1,7 @@
 package com.test.controller;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +56,7 @@ public class PostController {
 		return "Meowwwww....";
 	}
 
-	@PostMapping("/signUp")
+	@PostMapping("/signUp")	
 	public ResponseEntity<PostDto> createPost(@Valid @RequestBody Post post) {
 		Optional<User> userObj = userService.getOne(post.getUser().getId());
 		//Check whether that user exist and resource null or not.
@@ -63,11 +64,30 @@ public class PostController {
 				return ResponseEntity.notFound().build();
 			post.setUser(userObj.get());
 			//TRYING TO SET post id in RESOURCE TABLE.. WHICH IS NOT HAPPENNIG PREVIOUSLY
-			Iterable<Resource> res = post.getResources();
+			List<Resource> res = new ArrayList();
+			//res = post.getResources();
+			for(Resource re: post.getResources()) {
+				res.add(re);
+			}
+			
+			int id = post.getId();
+			//REMOVING RESOURCES
+			post.getResources().clear();
+			post = this.postService.savePost(post);
+			//List<Resource> res = new ArrayList<>();
 			for(Resource r : res) {
 				r.setPostFlag("1");
-				r.setResourceFlag("1");;
+				r.setResourceFlag("1");
+				r.setPost(post);
+				post.getResources().add(r);
 			}
+			//Optional<Post> getPost = this.postService.getOne(post.getId());
+			
+		/*
+		 * getPost.get().setId(post.getId()); getPost.get().setResources(res);
+		 * getPost.get().setResources(res);
+		 */
+			post.setResources(res);
 			post = this.postService.savePost(post);
 			if (post != null) {
 				PostDto postDto = modelMapper.map(post, PostDto.class);

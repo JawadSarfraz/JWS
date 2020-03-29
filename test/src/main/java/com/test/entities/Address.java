@@ -11,9 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 @Entity
 @Table(name = "ADDRESS")
-
+@DynamicInsert
+@DynamicUpdate
 public class Address implements Serializable {
 
 	private static final long serialVersionUID = 1L;
